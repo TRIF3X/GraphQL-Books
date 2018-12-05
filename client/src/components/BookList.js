@@ -8,7 +8,7 @@ class BookList extends Component {
   displayBooks(){
     let data = this.props.data
     if(data.loading) {
-      return( <div>Loading books...</div> )
+      return( <div>Loading books....</div> )
     } else {
       return( data.books.map(book => <li key={book.id}>{book.name}</li>) )
     }
