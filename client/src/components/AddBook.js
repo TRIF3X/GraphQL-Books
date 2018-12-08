@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { graphql } from 'react-apollo';
-import { getAuthorsQuery } from '../queries/queries.js'
+import { graphql, compose } from 'react-apollo';
+//compose allows us to bind to queries to this component
+import { getAuthorsQuery, addBookMutation } from '../queries/queries.js'
 
 
  class AddBook extends Component {
@@ -14,7 +15,7 @@ import { getAuthorsQuery } from '../queries/queries.js'
      }
 
     displayAuthors() {
-        let data = this.props.data
+        let data = this.props.getAuthorsQuery
         if(data.loading) {
             return (<option disabled>Loading authors...</option>)
         } else {
@@ -30,7 +31,14 @@ import { getAuthorsQuery } from '../queries/queries.js'
 
     submitForm(e){
         e.preventDefault()
-        console.log(this.state)
+        this.props.addBookMutation({
+            variables: {
+                name: this.state.name,
+                genre: this.state.genre,
+                authorId: this.state.authorId
+            }
+        })
+        this.setState({ name: '', genre: '' })
     }
 
    render() {
@@ -58,4 +66,7 @@ import { getAuthorsQuery } from '../queries/queries.js'
     }
   }
   
-  export default graphql(getAuthorsQuery)(AddBook);
+  export default compose(
+      graphql(getAuthorsQuery, {name: "getAuthorsQuery"}),
+      graphql(addBookMutation, {name: "addBookMutation"})
+  )(AddBook);
